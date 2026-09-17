@@ -1,67 +1,76 @@
-﻿// See https://aka.ms/new-console-template for more information
-
+﻿// SISTEMA DE INVENTARIO - Módulo 2 Completo
 using System.Reflection;
 
 var assembly = Assembly.GetExecutingAssembly();
-var assemblyName = assembly.GetName().Version;
+var version = assembly.GetName().Version;
 
-if(args.Length > 0){
-    switch(args[0].ToLower()){
+int cantidadProductos = 0;
+decimal valorTotalInventario = 0.00m;
+bool sistemaActivo = true;
+
+if (args.Length > 0)
+{
+    switch (args[0].ToLower())
+    {
         case "--help":
+        case "-h":
             MostrarAyuda();
-            Environment.Exit(0); //el cero es un codigo de salida que indica que el programa se ejecuto correctamente
+            Environment.Exit(0);
             break;
         case "--version":
-            Console.WriteLine($"Inventario app: v[{assemblyName}]");
+        case "-v":
+            Console.WriteLine($"InventarioApp v{version}");
             Environment.Exit(0);
             break;
         default:
-            Console.WriteLine($"Error: comando desconocido {args[0]}");
-            Console.WriteLine("use--help para ver los comandos disponibles");
-            // Environment.Exit(1); // el uno es un codigo de salida que indica que el programa se ejecuto con errores
-            Environment.Exit(2); // el dos es un codigo de salida que indica que el programa se ejecuto con argumentos desconocidos
+            Console.WriteLine($"Error: Comando '{args[0]}' no reconocido");
+            Console.WriteLine("Use --help para ver comandos disponibles.");
+            Environment.Exit(2);
             break;
     }
 }
 
 MostrarBanner();
+Console.WriteLine("Comandos disponibles: listar, agregar, buscar, salir");
+Console.WriteLine();
 
-//Modo interactivo si no hay argumentos
-Console.Write("Ingrese un comando (o 'salir' para terminar): ");
-string? entrada = Console.ReadLine(); //Esperar entrada del usuario y el ? despues del string indica que puede ser nulo, STDIN
-
-if (string.IsNullOrWhiteSpace(entrada) || entrada.ToLower() == "salir")
+while (sistemaActivo)
 {
-    Console.WriteLine("Saliendo del programa...");
-    Environment.Exit(0);
+    Console.Write("inventario> ");
+    string? entrada = Console.ReadLine();
+    string comando = entrada?.Trim().ToLower() ?? "salir";
+
+    switch (comando)
+    {
+        case "salir":
+        case "exit":
+        case "q":
+            sistemaActivo = false;
+            Console.WriteLine("¡Hasta luego!");
+            break;
+        case "listar":
+            Console.WriteLine($"📦 Productos en inventario: {cantidadProductos}");
+            Console.WriteLine($"💰 Valor total: ${valorTotalInventario:N2}");
+            break;
+        case "agregar":
+            Console.WriteLine("📝 Función agregar (se implementará en Módulo 3)");
+            break;
+        case "buscar":
+            Console.WriteLine("🔍 Función buscar (se implementará en Módulo 4)");
+            break;
+        case "":
+            break;
+        default:
+            Console.WriteLine($"❌ Comando '{comando}' no reconocido");
+            Console.WriteLine("   Use: listar, agregar, buscar, salir");
+            break;
+    }
+
+    if (sistemaActivo)
+        Console.WriteLine();
 }
 
-
-// Console.WriteLine("Hello, World!");
-// Console.WriteLine($"Plataforma: {Environment.OSVersion}");
-// Console.WriteLine($"Version de la aplicacion: {assemblyName}");
-// Console.WriteLine();
-// Console.WriteLine("Estrucura del proyecto:");
-// Console.WriteLine("Configuracion .csproj");
-// Console.WriteLine("Carpeta /src creada");
-// Console.WriteLine("Metadatos configurados");
-// Console.WriteLine();
-// Console.WriteLine("Proximo paso: Agregar argumentos CLI y configuracion de repositorio en Github");
-
-// ========== FUNCIONES ==============
-
-void MostrarAyuda()
-{
-    Console.WriteLine("USO: InventarioApp [comando] [opciones]");
-    Console.WriteLine();
-    Console.WriteLine("COMANDOS:");
-    Console.WriteLine("  --help, -h      Muestra esta ayuda");
-    Console.WriteLine("  --version, -v   Muestra la version del programa");
-    Console.WriteLine();
-    Console.WriteLine("EJEMPLOS:");
-    Console.WriteLine(" dotnet run -- --help");
-    Console.WriteLine(" dotnet run -- --version");
-}
+Environment.Exit(0);
 
 void MostrarBanner()
 {
@@ -69,8 +78,27 @@ void MostrarBanner()
     Console.WriteLine("║   SISTEMA DE GESTIÓN DE INVENTARIO   ║");
     Console.WriteLine("╚══════════════════════════════════════╝");
     Console.WriteLine();
-    Console.WriteLine($"Versión: {assemblyName}");
+    Console.WriteLine($"Versión: {version}");
     Console.WriteLine($".NET: {Environment.Version}");
     Console.WriteLine($"Sistema: {Environment.OSVersion.Platform}");
     Console.WriteLine();
+}
+
+void MostrarAyuda()
+{
+    Console.WriteLine("USO: dotnet run [opciones]");
+    Console.WriteLine();
+    Console.WriteLine("OPCIONES:");
+    Console.WriteLine("  --help, -h       Muestra esta ayuda");
+    Console.WriteLine("  --version, -v    Muestra la versión");
+    Console.WriteLine();
+    Console.WriteLine("COMANDOS INTERACTIVOS:");
+    Console.WriteLine("  listar           Lista productos del inventario");
+    Console.WriteLine("  agregar          Agrega un nuevo producto");
+    Console.WriteLine("  buscar           Busca productos");
+    Console.WriteLine("  salir            Sale del programa");
+    Console.WriteLine();
+    Console.WriteLine("EJEMPLOS:");
+    Console.WriteLine("  dotnet run");
+    Console.WriteLine("  dotnet run --version");
 }
